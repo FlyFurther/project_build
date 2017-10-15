@@ -8,9 +8,17 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class Test {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AopConfig.class);
-        DemoAnnotationService demoAnnotationService = context.getBean(DemoAnnotationService.class);
+        final DemoAnnotationService demoAnnotationService = context.getBean(DemoAnnotationService.class);
         DemoMethodService demoMethodService = context.getBean(DemoMethodService.class);
-        demoAnnotationService.add();
+        for (int i = 0; i < 20; i++) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    demoAnnotationService.add();
+                }
+            }).start();
+        }
+//        demoAnnotationService.add();
         demoMethodService.add();
         context.close();
     }
